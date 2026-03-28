@@ -3,9 +3,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from datetime import datetime
 from uuid import UUID
-import enum
+from enum import Enum
 from src.core.db import Base
 from src.models.user import User
+from typing import Optional
 
 class Workspace(Base):
     __tablename__ = 'workspaces'
@@ -16,10 +17,10 @@ class Workspace(Base):
         server_default=text('gen_random_uuid()')
     )
     name: Mapped[str] = mapped_column(String(100), nullable=False)
-    description: Mapped[str] = mapped_column(String(255), nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(String(255))
     owner_id: Mapped[UUID] = mapped_column(
         PG_UUID(as_uuid=True),
-        ForeignKey('users.id', ondelete='CASCADE'),
+        ForeignKey('users.id', ondelete='RESTRICT'),
         nullable=False
     )
     owner: Mapped[User] = relationship('User', back_populates='workspaces')
@@ -28,7 +29,18 @@ class Workspace(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
-class WorkspaceRole(enum.Enum):
+    projects = relationship(
+        "Project",
+        back_populates="workspace",
+        cascade="all, delete-orphan"
+    )
+    members = relationship(
+        "WorkspaceMember",
+        back_populates="workspace",
+        cascade="all, delete-orphan"
+    )
+
+class WorkspaceRole(str, Enum):
     owner = "owner"
     admin = "admin"
     member = "member"

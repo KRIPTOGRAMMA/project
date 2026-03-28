@@ -1,5 +1,5 @@
 from sqlalchemy import String, Boolean, text, DateTime, func, CheckConstraint
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from datetime import datetime
 from src.core.db import Base
@@ -22,4 +22,25 @@ class User(Base):
             "email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$'",
             name='ck_users_email_format',
         ),
+    )
+
+    workspaces = relationship(
+        "Workspace",
+        back_populates="owner",
+        foreign_keys="Workspace.owner_id"
+    )
+    workspace_memberships = relationship(
+        "WorkspaceMember",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
+    assigned_tasks = relationship(
+        'Task',
+        back_populates='assigned_user',
+        foreign_keys='Task.assigned_to'
+    )
+    created_tasks = relationship(
+        'Task',
+        back_populates='creator',
+        foreign_keys='Task.created_by'
     )
