@@ -4,6 +4,11 @@ from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from datetime import datetime
 from src.core.db import Base
 from uuid import UUID
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.models.workspace import Workspace, WorkspaceMember
+    from src.models.task import Task, TaskComment, TaskAttachment
 
 class User(Base):
     __tablename__ = 'users'
@@ -24,23 +29,32 @@ class User(Base):
         ),
     )
 
-    workspaces = relationship(
+    workspaces: Mapped[list['Workspace']] = relationship(
         "Workspace",
         back_populates="owner",
         foreign_keys="Workspace.owner_id"
     )
-    workspace_memberships = relationship(
+    workspace_memberships: Mapped[list['WorkspaceMember']] = relationship(
         "WorkspaceMember",
         back_populates="user",
         cascade="all, delete-orphan"
     )
-    assigned_tasks = relationship(
+    assigned_tasks: Mapped[list['Task']] = relationship(
         'Task',
         back_populates='assigned_user',
         foreign_keys='Task.assigned_to'
     )
-    created_tasks = relationship(
+    created_tasks: Mapped[list['Task']] = relationship(
         'Task',
         back_populates='creator',
         foreign_keys='Task.created_by'
+    )
+    
+    comments: Mapped[list['TaskComment']] = relationship(
+        'TaskComment', 
+        back_populates='user'
+    )
+    attachments: Mapped[list['TaskAttachment']] = relationship(
+        'TaskAttachment', 
+        back_populates='uploader'
     )

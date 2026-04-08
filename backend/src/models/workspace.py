@@ -6,7 +6,10 @@ from uuid import UUID
 from enum import Enum
 from src.core.db import Base
 from src.models.user import User
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.models.project import Project
 
 class Workspace(Base):
     __tablename__ = 'workspaces'
@@ -29,12 +32,12 @@ class Workspace(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    projects = relationship(
+    projects: Mapped[list['Project']] = relationship(
         "Project",
         back_populates="workspace",
         cascade="all, delete-orphan"
     )
-    members = relationship(
+    members: Mapped[list['WorkspaceMember']] = relationship(
         "WorkspaceMember",
         back_populates="workspace",
         cascade="all, delete-orphan"

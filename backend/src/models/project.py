@@ -5,7 +5,10 @@ from src.core.db import Base
 from datetime import datetime
 from uuid import UUID
 from src.models.workspace import Workspace
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.models.task import Task
 
 class Project(Base):
     __tablename__ = 'projects'
@@ -29,3 +32,9 @@ class Project(Base):
     is_archived: Mapped[bool] = mapped_column(Boolean, server_default=text('false'))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now() ,nullable=False)
+
+    tasks: Mapped[list['Task']] = relationship(
+        'Task', 
+        back_populates='project',
+        cascade='all, delete-orphan'
+    )

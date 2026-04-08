@@ -55,7 +55,7 @@ class Task(Base):
     
     assigned_user: Mapped[Optional['User']] = relationship(
         'User',
-        back_populates='tasks',
+        back_populates='assigned_tasks',
         foreign_keys=[assigned_to]
     )
     

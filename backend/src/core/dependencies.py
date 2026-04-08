@@ -1,5 +1,5 @@
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from jose import JWTError, jwt
@@ -44,7 +44,7 @@ def create_refresh_token(data: dict) -> str:
 
 
 async def get_current_user(
-        credentials: HTTPAuthCredentials = Depends(security),
+        credentials: HTTPAuthorizationCredentials = Depends(security),
         db: AsyncSession = Depends(get_async_session)
 ) -> User:
     token = credentials.credentials
@@ -80,7 +80,7 @@ async def get_current_user(
         )
     
     result = await db.execute(
-        select(User).where(User.id = user_uuid) # type: ignore
+        select(User).where(User.id == user_uuid)
     )
     user = result.scalar_one_or_none()
 

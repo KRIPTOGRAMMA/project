@@ -1,5 +1,9 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
+ENV_PATH = ROOT_DIR / '.env'
 
 class Settings(BaseSettings):
     db_url: str = Field(..., alias="DB_URL")
@@ -14,10 +18,10 @@ class Settings(BaseSettings):
     # Token expiration
     jwt_expiration_minutes: int = 15
     refresh_token_expiration_days: int = 7
-    class Config:
-        env_file = '.env'
-        case_sensitive = False
-        populate_by_name = True
-        extra = 'ignore'
+
+    model_config = SettingsConfigDict(
+        env_file=ENV_PATH,
+        extra="ignore"
+    )
 
 settings = Settings()
