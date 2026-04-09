@@ -16,7 +16,7 @@ async def register(
         db: AsyncSession = Depends(get_async_session)
 ):
     result = await db.execute(
-        select(User).where(User.email == user_data.email) #type: ignore
+        select(User).where(User.email == user_data.email)
     )
 
     existing = result.scalar_one_or_none()
@@ -48,7 +48,7 @@ async def login(
     db: AsyncSession = Depends(get_async_session)
 ):
     result = await db.execute(
-        select(User).where(User.email == credentials.email) #type: ignore
+        select(User).where(User.email == credentials.email)
     )
     user = result.scalar_one_or_none()
 
@@ -103,7 +103,7 @@ async def refresh_token(refresh_token: str):
         "token_type": "bearer"
     }
 
-@router.get('me', response_model=UserResponse)
+@router.get('/me', response_model=UserResponse)
 async def get_me(
     current_user: User = Depends(get_current_user)
 ):
