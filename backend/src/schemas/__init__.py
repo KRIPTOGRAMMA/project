@@ -13,6 +13,11 @@ from src.schemas.workspace import (
        WorkspaceMemberCreate,
        WorkspaceMemberResponse,
 )
+from src.schemas.project import (
+       ProjectCreate,
+       ProjectUpdate,
+       ProjectResponse,
+)
 from src.schemas.task import (
        TaskCreate,
        TaskUpdate,
@@ -22,23 +27,27 @@ from src.schemas.task import (
 )
 
 __all__ = [
-   # User
-   "UserCreate",
-   "UserLogin",
-   "UserUpdate",
-   "UserResponse",
-   "UserMeResponse",
-   "Token",
-   # Workspace
-   "WorkspaceCreate",
-   "WorkspaceUpdate",
-   "WorkspaceResponse",
-   "WorkspaceMemberCreate",
-   "WorkspaceMemberResponse",
-   # Task
-   "TaskCreate",
-   "TaskUpdate",
-   "TaskResponse",
-   "TaskCommentCreate",
-   "TaskCommentResponse",
+       # User
+       "UserCreate",
+       "UserLogin",
+       "UserUpdate",
+       "UserResponse",
+       "UserMeResponse",
+       "Token",
+       # Workspace
+       "WorkspaceCreate",
+       "WorkspaceUpdate",
+       "WorkspaceResponse",
+       "WorkspaceMemberCreate",
+       "WorkspaceMemberResponse",
+       # Project
+       "ProjectCreate",
+       "ProjectUpdate",
+       "ProjectResponse",
+       # Task
+       "TaskCreate",
+       "TaskUpdate",
+       "TaskResponse",
+       "TaskCommentCreate",
+       "TaskCommentResponse",
 ]
